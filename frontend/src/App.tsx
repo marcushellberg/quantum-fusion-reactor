@@ -41,20 +41,21 @@ function App() {
   }, []);
 
   return (
-      <div className="TodoApp">
-        <h1>Todo</h1>
-        <form onSubmit={addTodo}>
+      <div className="m-4 flex flex-col gap-4">
+        <h1 className="text-2xl font-bold">Todo</h1>
+        <form onSubmit={addTodo} className="flex gap-2">
           <input
               type="text"
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={task}
               onChange={(e) => setTask(e.target.value)} />
-          <button type="submit">Add</button>
+          <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add</button>
           <div className="errors">{error}</div>
         </form>
-        <ul>
+        <ul className="list-disc list-inside">
           {todos.map((todo) => (
               <li key={todo.id}>
-                {todo.task} <button onClick={() => clearTodo(todo.id)}>Delete</button>
+                {todo.task} <button onClick={() => clearTodo(todo.id)} className="shadow bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-1 px-2 rounded">Delete</button>
               </li>
           ))}
         </ul>
