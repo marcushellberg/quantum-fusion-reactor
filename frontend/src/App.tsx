@@ -1,16 +1,17 @@
+import { Button, Grid, IconButton, makeStyles, TextField } from '@material-ui/core';
+import { Delete } from '@material-ui/icons';
 import React, {useEffect, useState} from 'react'
 import {Todo} from "./types";
 
-function post(url:string, body: any) {
-  return fetch(url, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(body)
-  });
-}
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(3)
+  },
+}));
 
 function App() {
   const API_URL = "/api/todos";
+  const classes = useStyles();
   const [task, setTask] = useState("");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState("");
@@ -22,7 +23,11 @@ function App() {
       setError("Task cannot be empty");
       return;
     }
-    const res = await post(API_URL, { task, done: false });
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ task, done: false })
+    });
     setTodos([...todos, await res.json()]);
     setTask("");
   };
@@ -41,21 +46,30 @@ function App() {
   }, []);
 
   return (
-      <div className="m-4 flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">Todo</h1>
-        <form onSubmit={addTodo} className="flex gap-2">
-          <input
-              type="text"
-              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      <div className={classes.root}>
+        <h1>Todo</h1>
+        <Grid 
+          container
+          direction="row"
+          alignItems="center"
+          spacing={3}>
+            <Grid item>
+          <TextField
               value={task}
               onChange={(e) => setTask(e.target.value)} />
-          <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add</button>
-          <div className="errors">{error}</div>
-        </form>
-        <ul className="list-disc list-inside">
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" onClick={addTodo}>Add</Button>
+          </Grid>
+        </Grid>
+        <div className="errors">{error}</div>
+        <ul>
           {todos.map((todo) => (
               <li key={todo.id}>
-                {todo.task} <button onClick={() => clearTodo(todo.id)} className="shadow bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-1 px-2 rounded">Delete</button>
+                {todo.task} 
+                <IconButton onClick={() => clearTodo(todo.id)} >
+                  <Delete color="action"/>
+                </IconButton>
               </li>
           ))}
         </ul>
